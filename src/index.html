@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Editor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>World Editor</h1>
+    <canvas id="canvas"></canvas>
+
+    <div id="controls">
+      <button onclick="addRandomPoint()">Add point</button>
+      <button onclick="addRandomSegment()">Add segment</button>
+    </div>
+
+    <script src="primitives/point.js"></script>
+    <script src="primitives/segment.js"></script>
+    <script src="math/graph.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
