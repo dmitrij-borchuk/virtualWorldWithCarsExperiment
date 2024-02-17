@@ -1,8 +1,11 @@
 // @ts-check
+// TODO: zoom and click without moving mouse - wrong position
+
 class GraphEditor {
-  constructor(canvas, graph) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+  constructor(viewport, graph) {
+    this.viewport = viewport;
+    this.canvas = viewport.canvas;
+    this.ctx = viewport.canvas.getContext("2d");
     this.graph = graph;
     this.selected = null;
     this.hovered = null;
@@ -29,13 +32,15 @@ class GraphEditor {
         return;
       }
     }
-    if (this.hovered) {
-      this.#select(this.hovered);
-      this.dragging = true;
+    if (e.button === 0) {
+      if (this.hovered) {
+        this.#select(this.hovered);
+        this.dragging = true;
 
-      return;
+        return;
+      }
+      this.#addPoint(this.mouse);
     }
-    this.#addPoint(this.mouse);
   }
 
   #onMouseUp(e) {
@@ -46,14 +51,16 @@ class GraphEditor {
   }
 
   #onMouseMove(e) {
-    const x = e.clientX - this.canvas.offsetLeft;
-    const y = e.clientY - this.canvas.offsetTop;
-    this.mouse = new Point(x, y);
-    this.hovered = getNearestPoint(this.graph.points, this.mouse, 10);
+    this.mouse = this.viewport.getMousePos(e);
+    this.hovered = getNearestPoint(
+      this.graph.points,
+      this.mouse,
+      10 * this.viewport.zoom
+    );
 
     if (this.dragging) {
-      this.selected.x = x;
-      this.selected.y = y;
+      this.selected.x = this.mouse.x;
+      this.selected.y = this.mouse.y;
     }
   }
 
@@ -97,5 +104,12 @@ class GraphEditor {
         outline: "#ccc",
       });
     }
+
+    // Cursor
+    // this.mouse?.draw(this.ctx, {
+    //   size: 4,
+    //   fill: false,
+    //   outline: "red",
+    // });
   }
 }
