@@ -4,15 +4,6 @@ canvas.height = 600;
 
 const ctx = canvas.getContext("2d");
 
-const p1 = new Point(100, 100);
-const p2 = new Point(200, 100);
-const p3 = new Point(200, 200);
-const p4 = new Point(100, 200);
-
-const s1 = new Segment(p1, p2);
-const s2 = new Segment(p2, p3);
-const s3 = new Segment(p3, p4);
-
 const viewport = new Viewport(canvas);
 const savedData = JSON.parse(localStorage.getItem("graph"));
 const graph = Graph.load(savedData);
