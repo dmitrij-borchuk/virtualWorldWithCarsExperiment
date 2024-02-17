@@ -1,3 +1,4 @@
+// @ts-check
 class Graph {
   constructor(points = [], segments = []) {
     this.points = points;
@@ -44,6 +45,35 @@ class Graph {
       }
     }
     return false;
+  }
+
+  removePoint(point) {
+    if (!point) {
+      return;
+    }
+    this.points = this.points.filter((p) => !p.equals(point));
+    const segs = this.getSegmentsOfPoint(point);
+    for (const seg of segs) {
+      this.removeSegment(seg);
+    }
+  }
+
+  removeSegment(segment) {
+    this.segments = this.segments.filter((s) => !s.equals(segment));
+  }
+
+  getSegmentsOfPoint(point) {
+    return this.segments.filter((seg) => seg.includes(point));
+  }
+
+  dispose() {
+    this.points = [];
+    this.segments = [];
+  }
+
+  getNearestPoint(point) {
+    let minDist = Infinity;
+    return getNearestPoint(this.points, point);
   }
 
   draw(ctx) {
