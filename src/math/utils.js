@@ -28,3 +28,10 @@ function subVectors(v1, v2) {
 function scaleVector(v, s) {
   return new Point(v.x * s, v.y * s);
 }
+
+function translate(loc, angle, offset) {
+  return new Point(
+    loc.x + offset * Math.cos(angle),
+    loc.y + offset * Math.sin(angle)
+  );
+}
