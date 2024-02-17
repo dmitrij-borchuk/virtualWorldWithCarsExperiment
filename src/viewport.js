@@ -15,15 +15,27 @@ class Viewport {
     this.#addEventListeners();
   }
 
-  getMousePos(e) {
-    return new Point(
+  getMousePos(e, subtractDragOffset = false) {
+    const p = new Point(
       (e.offsetX - this.center.x) * this.zoom - this.offset.x,
       (e.offsetY - this.center.y) * this.zoom - this.offset.y
     );
+
+    return subtractDragOffset ? subVectors(p, this.drag.offset) : p;
   }
 
   getOffset() {
     return addVectors(this.offset, this.drag.offset);
+  }
+
+  reset() {
+    this.ctx.restore();
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.ctx.save();
+    this.ctx.translate(this.center.x, this.center.y);
+    this.ctx.scale(1 / this.zoom, 1 / this.zoom);
+    const offset = this.getOffset();
+    this.ctx.translate(offset.x, offset.y);
   }
 
   #addEventListeners() {
