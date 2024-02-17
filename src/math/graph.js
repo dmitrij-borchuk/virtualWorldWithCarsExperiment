@@ -84,4 +84,18 @@ class Graph {
       point.draw(ctx);
     }
   }
+
+  static load(json) {
+    const points = json?.points?.map((p) => new Point(p.x, p.y)) ?? [];
+    const segments =
+      json?.segments?.map(
+        (s) =>
+          new Segment(
+            points.find((p) => p.equals(s.p1)),
+            points.find((p) => p.equals(s.p2))
+          )
+      ) ?? [];
+
+    return new Graph(points, segments);
+  }
 }

@@ -15,6 +15,12 @@ class GraphEditor {
     this.#addEventListeners();
   }
 
+  dispose() {
+    graph.dispose();
+    this.selected = null;
+    this.hovered = null;
+  }
+
   #addEventListeners() {
     this.canvas.addEventListener("mousedown", (e) => this.#onMouseDown(e));
     this.canvas.addEventListener("mousemove", (e) => this.#onMouseMove(e));

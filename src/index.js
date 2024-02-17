@@ -14,7 +14,8 @@ const s2 = new Segment(p2, p3);
 const s3 = new Segment(p3, p4);
 
 const viewport = new Viewport(canvas);
-const graph = new Graph([p1, p2, p3, p4], [s1, s2, s3]);
+const savedData = JSON.parse(localStorage.getItem("graph"));
+const graph = Graph.load(savedData);
 graph.draw(ctx);
 
 const graphEditor = new GraphEditor(viewport, graph);
@@ -60,8 +61,9 @@ function animate() {
 //   graph.draw(ctx);
 // }
 
-// function removeAll() {
-//   graph.dispose();
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   graph.draw(ctx);
-// }
+function dispose() {
+  graphEditor.dispose();
+}
+function save() {
+  localStorage.setItem("graph", JSON.stringify(graph));
+}
