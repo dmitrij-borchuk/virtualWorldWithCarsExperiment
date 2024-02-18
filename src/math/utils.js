@@ -71,6 +71,9 @@ function getIntersection(A, B, C, D) {
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
+function lerp2d(p1, p2, t) {
+  return new Point(lerp(p1.x, p2.x, t), lerp(p1.y, p2.y, t));
+}
 
 function getRandomColor() {
   const hue = 290 + Math.random() * 260;

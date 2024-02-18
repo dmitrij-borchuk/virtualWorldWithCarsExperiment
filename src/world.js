@@ -121,7 +121,9 @@ class World {
     ];
     const trees = [];
     let tryCount = 0;
-    while (tryCount < 100) {
+    let maxSteps = 10000;
+    while (tryCount < 100 && maxSteps > 0) {
+      maxSteps--;
       const p = new Point(
         lerp(left, right, Math.random()),
         lerp(top, bottom, Math.random())
@@ -142,7 +144,7 @@ class World {
       if (keep) {
         // Check if the point is too close to other trees
         for (const t of trees) {
-          if (distance(t, p) < this.treesConfig.size) {
+          if (distance(t.center, p) < this.treesConfig.size) {
             keep = false;
             break;
           }
@@ -163,14 +165,14 @@ class World {
       }
 
       if (keep) {
-        trees.push(p);
+        trees.push(new Tree(p, this.treesConfig.size));
         tryCount = 0;
       }
       tryCount++;
     }
     return trees;
   }
-  draw() {
+  draw(viewPoint) {
     this.envelopes.forEach((d) =>
       d.draw(ctx, { color: "#bbb", stroke: "#bbb", lineWidth: 15 })
     );
@@ -182,8 +184,6 @@ class World {
     this.roadBorders.map((s) => s.draw(ctx, { color: "white", width: 4 }));
 
     this.buildings.forEach((b) => b.draw(ctx));
-    this.trees.forEach((t) =>
-      t.draw(ctx, { fill: "rgba(0,0,0,0.5)", size: this.treesConfig.size })
-    );
+    this.trees.forEach((t) => t.draw(ctx, viewPoint));
   }
 }
