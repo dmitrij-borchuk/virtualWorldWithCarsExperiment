@@ -1,10 +1,11 @@
 class Envelope {
-  constructor(segment, width) {
+  constructor(segment, width = 100, roundness = 1) {
     this.segment = segment;
-    this.poly = this.#generatePolygon(width);
+    this.poly = this.#generatePolygon(width, roundness);
+    this.roundness = roundness;
   }
 
-  #generatePolygon(width = 5) {
+  #generatePolygon(width = 5, roundness = 10) {
     const { p1, p2 } = this.segment;
     const radius = width / 2;
 
@@ -12,7 +13,7 @@ class Envelope {
     const alphaCw = alpha + Math.PI / 2;
     const alphaCcw = alpha - Math.PI / 2;
     const points = [];
-    const step = Math.PI / 10;
+    const step = Math.PI / roundness;
     // Need to add a small epsilon to include the last point (floating point number problem)
     const epsilon = 0.0001;
     for (let i = alphaCcw; i <= alphaCw + epsilon; i += step) {
@@ -25,7 +26,7 @@ class Envelope {
     return new Polygon(points);
   }
 
-  draw(ctx) {
-    this.poly.draw(ctx);
+  draw(ctx, options = {}) {
+    this.poly.draw(ctx, options);
   }
 }
