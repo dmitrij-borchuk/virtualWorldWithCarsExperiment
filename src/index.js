@@ -4,16 +4,21 @@ canvas.height = 600;
 
 const ctx = canvas.getContext("2d");
 
+canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 const viewport = new Viewport(canvas);
 const savedData = JSON.parse(localStorage.getItem("graph"));
 const graph = Graph.load(savedData);
 const world = new World(graph, 100, 10);
+const graphBtn = document.getElementById("graphBtn");
+const stopBtn = document.getElementById("stopBtn");
 
 graph.draw(ctx);
 
 const graphEditor = new GraphEditor(viewport, graph);
 const stopEditor = new StopEditor(viewport, world);
 let oldGraphHash = graph.hash();
+
+setMode("graph");
 
 animate();
 function animate() {
@@ -37,8 +42,6 @@ function save() {
   localStorage.setItem("graph", JSON.stringify(graph));
 }
 
-const graphBtn = document.getElementById("graphBtn");
-const stopBtn = document.getElementById("stopBtn");
 function setMode(mode) {
   disableEditors();
 

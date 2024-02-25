@@ -1,4 +1,4 @@
-class StopEditor {
+class Crossing {
   constructor(viewport, world) {
     this.viewport = viewport;
     this.world = world;
@@ -6,7 +6,6 @@ class StopEditor {
     this.ctx = this.canvas.getContext("2d");
     this.mouse = null;
     this.intend = null;
-    this.markings = world.markings;
   }
 
   #addEventListeners() {
@@ -21,7 +20,7 @@ class StopEditor {
   #onMouseMove = (e) => {
     this.mouse = this.viewport.getMousePos(e, true);
     const seg = getNearestSegment(
-      this.world.laneGuides,
+      this.world.graph.segments,
       this.mouse,
       10 * this.viewport.zoom
     );
@@ -32,7 +31,7 @@ class StopEditor {
         this.intend = new Stop(
           proj.point,
           seg.directionVector(),
-          world.roadWidth / 2,
+          world.roadWidth,
           world.roadWidth / 2
         );
       }
@@ -41,21 +40,7 @@ class StopEditor {
     }
   };
 
-  #onMouseDown = (e) => {
-    if (e.button === 0) {
-      if (this.intend) {
-        this.markings.push(this.intend);
-        this.intend = null;
-      }
-    } else if (e.button === 2) {
-      for (let i = 0; i < this.markings.length; i++) {
-        if (this.markings[i].poly.isPointInside(this.mouse)) {
-          this.markings.splice(i, 1);
-          break;
-        }
-      }
-    }
-  };
+  #onMouseDown = () => {};
 
   draw() {
     if (this.intend) {

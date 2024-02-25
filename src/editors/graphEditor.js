@@ -11,8 +11,6 @@ class GraphEditor {
     this.hovered = null;
     this.dragging = false;
     this.mouse = null;
-
-    this.#addEventListeners();
   }
 
   dispose() {
@@ -22,12 +20,16 @@ class GraphEditor {
   }
 
   #addEventListeners() {
-    this.canvas.addEventListener("mousedown", (e) => this.#onMouseDown(e));
-    this.canvas.addEventListener("mousemove", (e) => this.#onMouseMove(e));
-    this.canvas.addEventListener("mouseup", (e) => this.#onMouseUp(e));
-    this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+    this.canvas.addEventListener("mousedown", this.#onMouseDown);
+    this.canvas.addEventListener("mousemove", this.#onMouseMove);
+    this.canvas.addEventListener("mouseup", this.#onMouseUp);
   }
-  #onMouseDown(e) {
+  #removeEventListeners() {
+    this.canvas.removeEventListener("mousedown", this.#onMouseDown);
+    this.canvas.removeEventListener("mousemove", this.#onMouseMove);
+    this.canvas.removeEventListener("mouseup", this.#onMouseUp);
+  }
+  #onMouseDown = (e) => {
     if (e.button === 2) {
       if (this.selected) {
         this.selected = null;
@@ -47,16 +49,16 @@ class GraphEditor {
       }
       this.#addPoint(this.mouse);
     }
-  }
+  };
 
-  #onMouseUp(e) {
+  #onMouseUp = (e) => {
     this.dragging = false;
     // this.dragged = false;
     // this.draggedPoint = null;
     // this.draggedSegment = null;
-  }
+  };
 
-  #onMouseMove(e) {
+  #onMouseMove = (e) => {
     this.mouse = this.viewport.getMousePos(e, true);
     this.hovered = getNearestPoint(
       this.graph.points,
@@ -68,7 +70,7 @@ class GraphEditor {
       this.selected.x = this.mouse.x;
       this.selected.y = this.mouse.y;
     }
-  }
+  };
 
   #removePoint(point) {
     this.graph.removePoint(point);
@@ -117,5 +119,14 @@ class GraphEditor {
     //   fill: false,
     //   outline: "red",
     // });
+  }
+
+  enable() {
+    this.#addEventListeners();
+  }
+  disable() {
+    this.#removeEventListeners();
+    this.selected = null;
+    this.hovered = null;
   }
 }

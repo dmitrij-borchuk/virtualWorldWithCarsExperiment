@@ -12,6 +12,18 @@ function getNearestPoint(points, loc, threshold = Number.MAX_SAFE_INTEGER) {
   }
   return nearest;
 }
+function getNearestSegment(segments, loc, threshold = Number.MAX_SAFE_INTEGER) {
+  let nearest = null;
+  let minDist = Infinity;
+  for (const segment of segments) {
+    const dist = segment.distanceToPoint(loc);
+    if (dist < minDist && dist < threshold) {
+      minDist = dist;
+      nearest = segment;
+    }
+  }
+  return nearest;
+}
 
 function distance(p1, p2) {
   return Math.hypot(p2.x - p1.x, p2.y - p1.y);
@@ -81,4 +93,8 @@ function getRandomColor() {
 }
 function dot(p1, p2) {
   return p1.x * p2.x + p1.y * p2.y;
+}
+
+function angle(v) {
+  return Math.atan2(v.y, v.x);
 }

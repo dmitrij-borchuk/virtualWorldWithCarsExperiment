@@ -28,6 +28,8 @@ class World {
     };
     this.buildings = [];
     this.trees = [];
+    this.laneGuides = [];
+    this.markings = [];
 
     this.generate();
   }
@@ -40,6 +42,7 @@ class World {
 
     this.buildings = this.#generateBuildings();
     this.trees = this.#generateTrees();
+    this.laneGuides = this.#generateLaneGuides();
   }
   #generateBuildings() {
     const tmpEnvelopes = [];
@@ -172,8 +175,24 @@ class World {
     }
     return trees;
   }
+
+  #generateLaneGuides() {
+    const polys = [];
+    for (const seg of this.graph.segments) {
+      const envelope = new Envelope(
+        seg,
+        this.roadWidth / 2,
+        this.roadRoundness
+      );
+      polys.push(envelope.poly);
+    }
+    return Polygon.union(polys);
+  }
   draw(viewPoint) {
     this.envelopes.forEach((d) =>
+      d.draw(ctx, { color: "#bbb", stroke: "#bbb", lineWidth: 15 })
+    );
+    this.markings.forEach((d) =>
       d.draw(ctx, { color: "#bbb", stroke: "#bbb", lineWidth: 15 })
     );
 
