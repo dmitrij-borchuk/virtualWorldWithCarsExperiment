@@ -12,6 +12,7 @@ const world = new World(graph, 100, 10);
 graph.draw(ctx);
 
 const graphEditor = new GraphEditor(viewport, graph);
+const stopEditor = new StopEditor(viewport, world);
 let oldGraphHash = graph.hash();
 
 animate();
@@ -25,6 +26,7 @@ function animate() {
   world.draw(viewPoint);
   ctx.globalAlpha = 0.3;
   graphEditor.draw();
+  stopEditor.draw();
   requestAnimationFrame(animate);
 }
 
@@ -33,4 +35,29 @@ function dispose() {
 }
 function save() {
   localStorage.setItem("graph", JSON.stringify(graph));
+}
+
+const graphBtn = document.getElementById("graphBtn");
+const stopBtn = document.getElementById("stopBtn");
+function setMode(mode) {
+  disableEditors();
+
+  switch (mode) {
+    case "graph":
+      stopBtn.disabled = false;
+      graphEditor.enable();
+      break;
+    case "stop":
+      graphBtn.disabled = false;
+      stopEditor.enable();
+      break;
+  }
+}
+
+function disableEditors() {
+  graphBtn.disabled = true;
+  stopBtn.disabled = true;
+
+  graphEditor.disable();
+  stopEditor.disable();
 }

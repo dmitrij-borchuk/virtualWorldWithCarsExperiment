@@ -1,0 +1,3 @@
+class StopEditor {
+  draw() {}
+}

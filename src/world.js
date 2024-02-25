@@ -102,13 +102,13 @@ class World {
       }
     }
 
-    return bases;
+    return bases.map((b) => new Building(b));
   }
 
   #generateTrees() {
     const points = [
       ...this.roadBorders.map((d) => [d.p1, d.p2]).flat(),
-      ...this.buildings.map((d) => d.points).flat(),
+      ...this.buildings.map((d) => d.base.points).flat(),
     ];
     const left = Math.min(...points.map((p) => p.x));
     const right = Math.max(...points.map((p) => p.x));
@@ -116,7 +116,7 @@ class World {
     const bottom = Math.max(...points.map((p) => p.y));
 
     const illegalPolys = [
-      ...this.buildings,
+      ...this.buildings.map((b) => b.base),
       ...this.envelopes.map((d) => d.poly),
     ];
     const trees = [];
@@ -183,7 +183,12 @@ class World {
 
     this.roadBorders.map((s) => s.draw(ctx, { color: "white", width: 4 }));
 
-    this.buildings.forEach((b) => b.draw(ctx));
-    this.trees.forEach((t) => t.draw(ctx, viewPoint));
+    const items = [...this.buildings, ...this.trees];
+    items.sort(
+      (a, b) =>
+        b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
+    );
+
+    items.forEach((d) => d.draw(ctx, viewPoint));
   }
 }

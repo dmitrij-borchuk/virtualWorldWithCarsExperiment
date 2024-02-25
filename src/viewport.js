@@ -2,7 +2,7 @@ class Viewport {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
-    this.zoom = 1;
+    this.zoom = 2;
     this.center = new Point(canvas.width / 2, canvas.height / 2);
     this.offset = scaleVector(this.center, -1);
     this.drag = {
