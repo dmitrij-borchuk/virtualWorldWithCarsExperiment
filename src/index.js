@@ -5,17 +5,23 @@ canvas.height = 600;
 const ctx = canvas.getContext("2d");
 
 canvas.addEventListener("contextmenu", (e) => e.preventDefault());
-const viewport = new Viewport(canvas);
-const savedData = JSON.parse(localStorage.getItem("graph"));
-const graph = Graph.load(savedData);
-const world = new World(graph, 100, 10);
-const graphBtn = document.getElementById("graphBtn");
-const stopBtn = document.getElementById("stopBtn");
+const savedData = JSON.parse(localStorage.getItem("world"));
+let world = savedData ? World.load(savedData) : new World(new Graph());
+const graph = world.graph;
+// const world = new World(graph, 100, 10);
+const viewport = new Viewport(canvas, world.offset, world.zoom);
 
 graph.draw(ctx);
 
-const graphEditor = new GraphEditor(viewport, graph);
-const stopEditor = new StopEditor(viewport, world);
+const tools = {
+  graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
+  stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
+  crossing: {
+    button: crossingBtn,
+    editor: new CrossingEditor(viewport, world),
+  },
+  start: { button: startBtn, editor: new StartEditor(viewport, world) },
+};
 let oldGraphHash = graph.hash();
 
 setMode("graph");
@@ -30,37 +36,55 @@ function animate() {
   const viewPoint = scaleVector(viewport.getOffset(), -1);
   world.draw(viewPoint);
   ctx.globalAlpha = 0.3;
-  graphEditor.draw();
-  stopEditor.draw();
+  for (const tool of Object.values(tools)) {
+    tool.editor.draw();
+  }
   requestAnimationFrame(animate);
 }
 
 function dispose() {
-  graphEditor.dispose();
+  tools.graph.editor.dispose();
+  world.markings = [];
 }
 function save() {
-  localStorage.setItem("graph", JSON.stringify(graph));
+  world.zoom = viewport.zoom;
+  world.offset = viewport.offset;
+  const el = document.createElement("a");
+  el.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(world))
+  );
+
+  const fileName = "name.world";
+  el.setAttribute("download", fileName);
+  el.click();
+
+  localStorage.setItem("world", JSON.stringify(world));
 }
 
 function setMode(mode) {
   disableEditors();
-
-  switch (mode) {
-    case "graph":
-      stopBtn.disabled = false;
-      graphEditor.enable();
-      break;
-    case "stop":
-      graphBtn.disabled = false;
-      stopEditor.enable();
-      break;
-  }
+  tools[mode].button.disabled = true;
+  tools[mode].editor.enable();
 }
 
 function disableEditors() {
-  graphBtn.disabled = true;
-  stopBtn.disabled = true;
+  for (const tool of Object.values(tools)) {
+    tool.button.disabled = false;
+    tool.editor.disable();
+  }
+}
 
-  graphEditor.disable();
-  stopEditor.disable();
+function load(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const data = JSON.parse(e.target.result);
+    const world = World.load(data);
+
+    localStorage.setItem("world", JSON.stringify(world));
+    location.reload();
+  };
+  reader.readAsText(file);
 }

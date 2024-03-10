@@ -98,3 +98,7 @@ function dot(p1, p2) {
 function angle(v) {
   return Math.atan2(v.y, v.x);
 }
+
+function perpendicular(p) {
+  return new Point(-p.y, p.x);
+}

@@ -4,6 +4,10 @@ class Polygon {
     this.segments = this.#generateSegments();
   }
 
+  static load(json) {
+    return new Polygon(json.points.map((p) => new Point(p.x, p.y)));
+  }
+
   #generateSegments() {
     const segments = [];
     for (let i = 0; i < this.points.length; i++) {

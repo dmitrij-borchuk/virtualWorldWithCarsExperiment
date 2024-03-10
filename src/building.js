@@ -4,6 +4,10 @@ class Building {
     this.hightCoef = hightCoef;
   }
 
+  static load(json) {
+    return new Building(Polygon.load(json.base), json.hightCoef);
+  }
+
   draw(ctx, viewpoint) {
     const topPoints = this.base.points.map((p) =>
       addVectors(p, scaleVector(subVectors(p, viewpoint), this.hightCoef))

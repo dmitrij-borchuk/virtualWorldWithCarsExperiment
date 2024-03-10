@@ -2,7 +2,7 @@ class World {
   constructor(
     graph,
     roadWidth = 100,
-    roadRoundness = 3,
+    roadRoundness = 10,
     buildingsConfig,
     treesConfig
   ) {
@@ -32,6 +32,39 @@ class World {
     this.markings = [];
 
     this.generate();
+  }
+
+  static load(json) {
+    const world = new World(new Graph());
+
+    world.roadWidth = json.roadWidth;
+    world.roadRoundness = json.roadRoundness;
+
+    world.buildingsConfig = json.buildingsConfig;
+    world.treesConfig = json.treesConfig;
+
+    const graph = json ? Graph.load(json.graph) : new Graph();
+    world.graph = graph;
+    world.envelopes = json.envelopes.map((d) => Envelope.load(d));
+    world.roadBorders = json.roadBorders.map((d) => new Segment(d.p1, d.p2));
+    world.buildings = json.buildings.map((d) => Building.load(d));
+    world.trees = json.trees.map(
+      (d) => new Tree(d.center, d.size, d.hightCoef)
+    );
+    world.laneGuides = json.laneGuides.map((d) => new Segment(d.p1, d.p2));
+    world.markings = json.markings.map((d) => {
+      if (d.type === "start") {
+        return new Start(d.center, d.direction, d.width, d.height);
+      } else if (d.type === "crossing") {
+        return new Crossing(d.center, d.direction, d.width, d.height);
+      } else if (d.type === "stop") {
+        return new Stop(d.center, d.direction, d.width, d.height);
+      }
+    });
+    world.zoom = json.zoom;
+    world.offset = json.offset;
+
+    return world;
   }
   generate() {
     this.envelopes = this.graph.segments.map(

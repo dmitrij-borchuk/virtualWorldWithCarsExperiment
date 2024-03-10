@@ -13,6 +13,10 @@
         border: none;
         background-color: #f0f0f0;
         cursor: pointer;
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+        box-sizing: border-box;
       }
     </style>
   </head>
@@ -25,14 +29,30 @@
       <!-- <button onclick="addRandomSegment()">Add segment</button> -->
       <!-- <button onclick="removeRandomSegment()">Remove segment</button> -->
       <!-- <button onclick="removeRandomPoint()">Remove point</button> -->
-      <button class="emojiBtn" onclick="dispose()">🌐</button>
+      <button class="emojiBtn" onclick="dispose()">🗑</button>
       <button class="emojiBtn" onclick="save()">💾</button>
+      <label for="fileInput" class="emojiBtn fileInputLabel">
+        📁
+        <input
+          type="file"
+          id="fileInput"
+          accept=".world"
+          style="display: none"
+          onchange="load(event)"
+        />
+      </label>
 
       <button class="emojiBtn" id="graphBtn" onclick="setMode('graph')">
         📈
       </button>
       <button class="emojiBtn" id="stopBtn" onclick="setMode('stop')">
         🛑
+      </button>
+      <button class="emojiBtn" id="crossingBtn" onclick="setMode('crossing')">
+        🚶‍♂️
+      </button>
+      <button class="emojiBtn" id="startBtn" onclick="setMode('start')">
+        🚕
       </button>
     </div>
 
@@ -43,8 +63,14 @@
     <script src="math/graph.js"></script>
     <script src="math/utils.js"></script>
     <script src="editors/graphEditor.js"></script>
+    <script src="editors/markingEditor.js"></script>
     <script src="editors/stopEditor.js"></script>
+    <script src="editors/startEditor.js"></script>
+    <script src="editors/crossingEditor.js"></script>
+    <script src="worldObject/marking.js"></script>
     <script src="worldObject/stop.js"></script>
+    <script src="worldObject/start.js"></script>
+    <script src="worldObject/crossing.js"></script>
     <script src="viewport.js"></script>
     <script src="tree.js"></script>
     <script src="building.js"></script>

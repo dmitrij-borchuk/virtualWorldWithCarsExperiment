@@ -1,8 +1,16 @@
 class Envelope {
   constructor(segment, width = 100, roundness = 1) {
-    this.segment = segment;
-    this.poly = this.#generatePolygon(width, roundness);
-    this.roundness = roundness;
+    if (segment) {
+      this.segment = segment;
+      this.poly = this.#generatePolygon(width, roundness);
+    }
+  }
+
+  static load(json) {
+    const env = new Envelope();
+    env.segment = new Segment(json.segment.p1, json.segment.p2);
+    env.poly = Polygon.load(json.poly);
+    return env;
   }
 
   #generatePolygon(width = 5, roundness = 10) {
